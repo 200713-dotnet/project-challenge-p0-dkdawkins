@@ -14,40 +14,23 @@ namespace PizzaBox.Client
     {
       var clientType = GetClientType();
       var clientName = Login(clientType);
-      User user = null;
-      Store store = null;
-      var exit = false;
 
-      //Instantiate application user
-      switch (clientType)
+      if (clientName != null)
       {
-        case 1:
-          user = new User(clientName);
-          break;
-        case 2:
-          store = new Store(clientName);
-          break;
-        default:
-          break;
-      }
-
-      if (clientName == null) exit = true;
-
-      //Main program loop
-      while(!exit)
-      {
-        switch(clientType)
+        //Instantiate application user and run the appropriate menu
+        switch (clientType)
         {
           case 1:
-            DisplayUserMenu(user);
+            User user = new User(clientName);
+            UserMenu(user);
             break;
           case 2:
-            DisplayStoreMenu(store);
+            Store store = new Store(clientName);
+            StoreMenu(store);
             break;
           default:
             break;
         }
-        exit = true;
       }
     }
 
@@ -82,14 +65,61 @@ namespace PizzaBox.Client
       return name;
     }
 
-    static void DisplayUserMenu(User user)
+    static void UserMenu(User user)
     {
-      Console.WriteLine($"Welcome {user.Name}!");
+      var exit = false;
+      int selection;
+      Store userStore = null;
+
+      //User selects a store to view/order from (may want to make this a class function)
+      Console.WriteLine($"Welcome {user.Name}! Please select a store to view (1 for PizzaHut, 2 for Dominos).");
+      int.TryParse(Console.ReadLine(), out selection);
+
+      switch(selection)
+      {
+        case 1:
+          userStore = new Store("PizzaHut");
+          break;
+        case 2:
+          userStore = new Store("Dominos");
+          break;
+        default:
+          Console.WriteLine("No valid selection; exiting program.");
+          exit = true;
+          break;
+      }
+
+      while (!exit)
+      {
+        Console.WriteLine($"Welcome to {userStore.Name}, {user.Name}! What do you want to do?");
+        Console.WriteLine("Enter 1 to place an order.");
+        Console.WriteLine("Enter 2 to view your order history.");
+        Console.WriteLine("Enter any other key to exit the program.");
+        int.TryParse(Console.ReadLine(), out selection);  //Test this line to ensure no erroneous carry-over
+
+        switch(selection)
+        {
+          case 1:
+            //Display order menu (this may be a class function) until checkout
+            break;
+          case 2:
+            //Display order history (may be a class function) until exit
+            break;
+          default:
+            exit = true;
+            break;
+        }
+      }
     }
 
-    static void DisplayStoreMenu(Store store)
+    static void StoreMenu(Store store)
     {
-      Console.WriteLine($"Welcome {store.Name}!");
+      var exit = false;
+      while (!exit)
+      {
+        Console.WriteLine($"Welcome {store.Name}!");
+        exit = true;
+      }
     }
   }
 }
