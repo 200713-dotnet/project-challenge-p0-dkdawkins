@@ -17,11 +17,22 @@ namespace PizzaBox.Domain.Models
     public Store(string storeName)
     {
       Name = storeName;
+      Orders = new List<Order>();
     }
 
     public Order CreateOrder()
     {
       return new Order();
+    }
+
+    public void ViewOrders()
+    {
+
+    }
+
+    public void ViewSales()
+    {
+      
     }
   }
 }

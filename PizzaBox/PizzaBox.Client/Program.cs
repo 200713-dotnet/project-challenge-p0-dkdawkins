@@ -68,7 +68,7 @@ namespace PizzaBox.Client
     static void UserMenu(User user)
     {
       var exit = false;
-      int selection;
+      int selection = 0;
       Store userStore = null;
 
       //User selects a store to view/order from (may want to make this a class function)
@@ -100,7 +100,7 @@ namespace PizzaBox.Client
         switch(selection)
         {
           case 1:
-            //Display order menu (this may be a class function) until checkout
+            user.PlaceOrder(userStore);
             break;
           case 2:
             //Display order history (may be a class function) until exit
@@ -115,10 +115,28 @@ namespace PizzaBox.Client
     static void StoreMenu(Store store)
     {
       var exit = false;
+      int selection = 0;
+
       while (!exit)
       {
-        Console.WriteLine($"Welcome {store.Name}!");
-        exit = true;
+        Console.WriteLine($"Welcome {store.Name}! What do you want to do?");
+        Console.WriteLine("Enter 1 to view order history.");
+        Console.WriteLine("Enter 2 to view sales information.");
+        Console.WriteLine("Enter any other key to exit the program.");
+        int.TryParse(Console.ReadLine(), out selection);
+
+        switch(selection)
+        {
+          case 1:
+            //Display order history (this may be a class function) until exit
+            break;
+          case 2:
+            //Display sales info. (may be a class function) until exit
+            break;
+          default:
+            exit = true;
+            break;
+        }
       }
     }
   }
