@@ -89,6 +89,9 @@ namespace PizzaBox.Client
           break;
       }
 
+      //Load from database
+      GetUserData(user, userStore);
+
       while (!exit)
       {
         Console.WriteLine($"Welcome to {userStore.Name}, {user.Name}! What do you want to do?");
@@ -103,19 +106,24 @@ namespace PizzaBox.Client
             user.PlaceOrder(userStore);
             break;
           case 2:
-            //Display order history (may be a class function) until exit
+            user.ViewOrders();
             break;
           default:
             exit = true;
             break;
         }
       }
+
+      SaveUserData(user, userStore);
     }
 
     static void StoreMenu(Store store)
     {
       var exit = false;
       int selection = 0;
+
+      //Load from database
+      GetStoreData(store);
 
       while (!exit)
       {
@@ -128,7 +136,7 @@ namespace PizzaBox.Client
         switch(selection)
         {
           case 1:
-            //Display order history (this may be a class function) until exit
+            store.ViewOrders();
             break;
           case 2:
             //Display sales info. (may be a class function) until exit
@@ -138,6 +146,28 @@ namespace PizzaBox.Client
             break;
         }
       }
+
+      SaveStoreData(store);
+    }
+
+    static void GetUserData(User user, Store userStore)
+    {
+      //Load User and Store's orders from database
+    }
+
+    static void SaveUserData(User user, Store userStore)
+    {
+      //Save changes to user and store orders in database
+    }
+
+    static void GetStoreData(Store store)
+    {
+      //Load Store's orders from database
+    }
+
+    static void SaveStoreData(Store store)
+    {
+      //Save changes to store orders in database
     }
   }
 }
