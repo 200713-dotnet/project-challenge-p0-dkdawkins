@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using PizzaBox.Domain.Models;
+using PizzaBox.Storing;
 
 namespace PizzaBox.Client
 {
@@ -12,6 +14,7 @@ namespace PizzaBox.Client
 
     static void Run()
     {
+      var db = new PizzaBoxDbContext();
       var clientType = GetClientType();
       var clientName = Login(clientType);
 
@@ -22,11 +25,11 @@ namespace PizzaBox.Client
         {
           case 1:
             User user = new User(clientName);
-            UserMenu(user);
+            UserMenu(user, db);
             break;
           case 2:
             Store store = new Store(clientName);
-            StoreMenu(store);
+            StoreMenu(store, db);
             break;
           default:
             break;
@@ -65,7 +68,7 @@ namespace PizzaBox.Client
       return name;
     }
 
-    static void UserMenu(User user)
+    static void UserMenu(User user, PizzaBoxDbContext db)
     {
       var exit = false;
       int selection = 0;
@@ -90,7 +93,7 @@ namespace PizzaBox.Client
       }
 
       //Load from database
-      GetUserData(user, userStore);
+      GetUserData(user, userStore, db);
 
       while (!exit)
       {
@@ -98,7 +101,7 @@ namespace PizzaBox.Client
         Console.WriteLine("Enter 1 to place an order.");
         Console.WriteLine("Enter 2 to view your order history.");
         Console.WriteLine("Enter any other key to exit the program.");
-        int.TryParse(Console.ReadLine(), out selection);  //Test this line to ensure no erroneous carry-over
+        int.TryParse(Console.ReadLine(), out selection);
 
         switch(selection)
         {
@@ -114,16 +117,16 @@ namespace PizzaBox.Client
         }
       }
 
-      SaveUserData(user, userStore);
+      SaveUserData(user, userStore, db);
     }
 
-    static void StoreMenu(Store store)
+    static void StoreMenu(Store store, PizzaBoxDbContext db)
     {
       var exit = false;
       int selection = 0;
 
       //Load from database
-      GetStoreData(store);
+      GetStoreData(store, db);
 
       while (!exit)
       {
@@ -147,25 +150,30 @@ namespace PizzaBox.Client
         }
       }
 
-      SaveStoreData(store);
+      SaveStoreData(store, db);
     }
 
-    static void GetUserData(User user, Store userStore)
+    static void GetUserData(User user, Store userStore, PizzaBoxDbContext db)
     {
       //Load User and Store's orders from database
+      foreach(var order in db.Pborder.ToList())
+      {
+        System.Console.WriteLine("Order Found.");
+      }
+      System.Console.WriteLine("GetUserData finished executing");
     }
 
-    static void SaveUserData(User user, Store userStore)
+    static void SaveUserData(User user, Store userStore, PizzaBoxDbContext db)
     {
       //Save changes to user and store orders in database
     }
 
-    static void GetStoreData(Store store)
+    static void GetStoreData(Store store, PizzaBoxDbContext db)
     {
       //Load Store's orders from database
     }
 
-    static void SaveStoreData(Store store)
+    static void SaveStoreData(Store store, PizzaBoxDbContext db)
     {
       //Save changes to store orders in database
     }
