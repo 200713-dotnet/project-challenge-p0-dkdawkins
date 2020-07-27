@@ -8,7 +8,7 @@ namespace PizzaBox.Storing
         public int PizzaOrderId { get; set; }
         public int OrderId { get; set; }
         public int PizzaId { get; set; }
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         public virtual Pborder Order { get; set; }
         public virtual Pizza Pizza { get; set; }

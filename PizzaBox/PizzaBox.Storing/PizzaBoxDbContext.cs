@@ -40,8 +40,6 @@ namespace PizzaBox.Storing
             {
                 entity.ToTable("Crust", "Pizza");
 
-                entity.Property(e => e.CrustId).ValueGeneratedNever();
-
                 entity.Property(e => e.Active)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
@@ -57,8 +55,6 @@ namespace PizzaBox.Storing
                     .HasName("PK_OrderId");
 
                 entity.ToTable("PBOrder", "Client");
-
-                entity.Property(e => e.OrderId).ValueGeneratedNever();
 
                 entity.Property(e => e.Active)
                     .IsRequired()
@@ -88,8 +84,6 @@ namespace PizzaBox.Storing
 
                 entity.ToTable("PBStore", "Client");
 
-                entity.Property(e => e.StoreId).ValueGeneratedNever();
-
                 entity.Property(e => e.Active)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
@@ -106,8 +100,6 @@ namespace PizzaBox.Storing
 
                 entity.ToTable("PBUser", "Client");
 
-                entity.Property(e => e.UserId).ValueGeneratedNever();
-
                 entity.Property(e => e.Active)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
@@ -121,13 +113,9 @@ namespace PizzaBox.Storing
             {
                 entity.ToTable("Pizza", "Pizza");
 
-                entity.Property(e => e.PizzaId).ValueGeneratedNever();
-
                 entity.Property(e => e.Active)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.DateModified).HasColumnType("datetime2(0)");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -150,7 +138,9 @@ namespace PizzaBox.Storing
             {
                 entity.ToTable("PizzaOrder", "Client");
 
-                entity.Property(e => e.PizzaOrderId).ValueGeneratedNever();
+                entity.Property(e => e.Active)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.PizzaOrder)
@@ -169,7 +159,9 @@ namespace PizzaBox.Storing
             {
                 entity.ToTable("PizzaTopping", "Pizza");
 
-                entity.Property(e => e.PizzaToppingId).ValueGeneratedNever();
+                entity.Property(e => e.Active)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Pizza)
                     .WithMany(p => p.PizzaTopping)
@@ -188,8 +180,6 @@ namespace PizzaBox.Storing
             {
                 entity.ToTable("Size", "Pizza");
 
-                entity.Property(e => e.SizeId).ValueGeneratedNever();
-
                 entity.Property(e => e.Active)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
@@ -202,8 +192,6 @@ namespace PizzaBox.Storing
             modelBuilder.Entity<Topping>(entity =>
             {
                 entity.ToTable("Topping", "Pizza");
-
-                entity.Property(e => e.ToppingId).ValueGeneratedNever();
 
                 entity.Property(e => e.Active)
                     .IsRequired()
