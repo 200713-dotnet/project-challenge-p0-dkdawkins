@@ -3,6 +3,9 @@ go
 
 -- CREATE
 
+/*create database PizzaBoxDb;
+go*/
+
 create schema Pizza;
 go
 
@@ -12,18 +15,17 @@ go
 -- Pizza tables
 create table Pizza.Pizza
 (
-  PizzaId int not null,
+  PizzaId int not null identity(1,1),
   CrustId int not null,
   SizeId int not null,
   [Name] nvarchar(250) not null,
-  DateModified datetime2(0) not null,
   Active bit not null default 1,
   constraint PK_PizzaId primary key (PizzaId),
 );
 
 create table Pizza.Crust
 (
-  CrustId int not null,
+  CrustId int not null identity(1,1),
   [Name] nvarchar(100) not null,
   Active bit not null default 1,
   constraint PK_CrustId primary key (CrustId),
@@ -31,7 +33,7 @@ create table Pizza.Crust
 
 create table Pizza.Size
 (
-  SizeId int not null,
+  SizeId int not null identity(1,1),
   [Name] nvarchar(250) not null,
   Active bit not null default 1,
   constraint PK_SizeId primary key (SizeId),
@@ -39,7 +41,7 @@ create table Pizza.Size
 
 create table Pizza.Topping
 (
-  ToppingId int not null,
+  ToppingId int not null identity(1,1),
   [Name] nvarchar(250) not null,
   Active bit not null default 1,
   constraint PK_ToppingId primary key (ToppingId),
@@ -47,10 +49,10 @@ create table Pizza.Topping
 
 create table Pizza.PizzaTopping
 (
-  PizzaToppingId int not null,
+  PizzaToppingId int not null identity(1,1),
   PizzaId int not null,
   ToppingId int not null,
-  Active bit not null
+  Active bit not null default 1,
   constraint PK_PizzaToppingId primary key (PizzaToppingId),
 );
 go
@@ -58,7 +60,7 @@ go
 --Client tables
 create table Client.PBUser
 (
-  UserId int not null,
+  UserId int not null identity(1,1),
   [Name] nvarchar(250) not null,
   Active bit not null default 1,
   constraint PK_UserId primary key (UserId),
@@ -66,7 +68,7 @@ create table Client.PBUser
 
 create table Client.PBStore
 (
-  StoreId int not null,
+  StoreId int not null identity(1,1),
   [Name] nvarchar(250) not null,
   Active bit not null default 1,
   constraint PK_StoreId primary key (StoreId),
@@ -74,7 +76,7 @@ create table Client.PBStore
 
 create table Client.PBOrder
 (
-  OrderId int not null,
+  OrderId int not null identity(1,1),
   UserId int not null,
   StoreId int not null,
   [Name] nvarchar(250) not null,
@@ -84,10 +86,10 @@ create table Client.PBOrder
 
 create table Client.PizzaOrder
 (
-  PizzaOrderId int not null,
+  PizzaOrderId int not null identity(1,1),
   OrderId int not null,
   PizzaId int not null,
-  Active bit not null
+  Active bit not null default 1,
   constraint PK_PizzaOrderId primary key (PizzaOrderId),
 );
 go

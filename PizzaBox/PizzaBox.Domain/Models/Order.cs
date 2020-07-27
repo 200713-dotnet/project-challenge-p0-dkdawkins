@@ -8,11 +8,22 @@ namespace PizzaBox.Domain.Models
     public List<Pizza> Pizzas { get; set; }
     public DateTime DateOrdered { get; set; }
     public string Name { get; set; }
+    public bool IsNew { get; set; }
 
+    //Called when creating an order in the application
     public Order(string name)
     {
       Name = name;
       Pizzas = new List<Pizza>();
+      IsNew = true;
+    }
+
+    //Called when loading an order from the db
+    public Order(string name, List<Pizza> pizzas)
+    {
+      Name = name;
+      Pizzas = pizzas;
+      IsNew = false;
     }
 
     public void CreatePizza(string size, string crust, List<string> toppings)
