@@ -21,29 +21,29 @@ The project should support objects of User, Store, Order, Pizza.
 
 ### store
 
-+ [required] there should exist at least 2 stores for a user to choose from (1)
-+ [required] each store should be able to view/list any and all of their completed/placed orders (2)
++ [required] there should exist at least 2 stores for a user to choose from (DONE)
++ [required] each store should be able to view/list any and all of their completed/placed orders (PARTIALLY DONE)
 + [required] each store should be able to view/list any and all of their sales (amount of revenue weekly or monthly) (2)
 
 ### order
 
-+ [required] each order must be able to view/list/edit its collection of pizzas (1)
++ [required] each order must be able to view/list/edit its collection of pizzas (DONE)
 + [required] each order must be able to compute its pricing (2)
 + [required] each order must be limited to a total pricing of no more than $250 (3)
-+ [required] each order must be limited to a collection of pizzas of no more than 50 (3)
++ [required] each order must be limited to a collection of pizzas of no more than 50 (NEEDS TESTING)
 
 ### pizza
 
-+ [required] each pizza must be able to have a crust (1)
-+ [required] each pizza must be able to have a size (1)
-+ [required] each pizza must be able to have toppings (1)
++ [required] each pizza must be able to have a crust (DONE)
++ [required] each pizza must be able to have a size (DONE)
++ [required] each pizza must be able to have toppings (DONE)
 + [required] each pizza must be able to compute its pricing (2)
-+ [required] each pizza must have no less than 2 default toppings (1)
-+ [required] each pizza must limit its toppings to no more 5 (3)
++ [required] each pizza must have no less than 2 default toppings (DONE)
++ [required] each pizza must limit its toppings to no more 5 (PARTIALLY DONE)
 
 ### user
 
-+ [required] must be able to view/list its order history (2)
++ [required] must be able to view/list its order history (DONE)
 + [required] must be able to only order from 1 location in a 24-hour period with no reset (3)
 + [required] must be able to only order once every 2-hour period (1)
 
