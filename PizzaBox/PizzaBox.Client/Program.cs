@@ -193,7 +193,6 @@ namespace PizzaBox.Client
               }
             }
             user.Orders.Add(new Order(order.Name, userPizzas));
-            System.Console.WriteLine("Order Populated."); //DELETE ME
           }
         }
       }
@@ -206,7 +205,6 @@ namespace PizzaBox.Client
         db.Pbuser.Add(pbuser);
         db.SaveChanges();
       }
-      //System.Console.WriteLine("GetUserData finished executing");
     }
 
     static void SaveUserData(User user, Store userStore, PizzaBoxDbContext db)
@@ -277,7 +275,7 @@ namespace PizzaBox.Client
       //Add new store orders
       foreach(var order in userStore.Orders)
       {
-
+        //START HERE!!
       }
 
       //db.SaveChanges();
