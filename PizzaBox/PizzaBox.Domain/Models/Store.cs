@@ -20,11 +20,6 @@ namespace PizzaBox.Domain.Models
       Orders = new List<Order>();
     }
 
-    /*public Order CreateOrder()
-    {
-      return new Order();
-    }*/
-
     public void ViewOrders()
     {
       System.Console.WriteLine("Press enter again to view all orders, or enter a name to filter by.");
@@ -51,6 +46,12 @@ namespace PizzaBox.Domain.Models
       }
     }
 
+    //Deletes the first item in the order list and returns it
+    public void DeleteFirstOrder()
+    {
+      var deletedOrder = Orders[0];
+      Orders.RemoveAt(0);
+    }
     /*public void ViewSales()
     {
       

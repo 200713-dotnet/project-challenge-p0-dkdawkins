@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using PizzaBox.Domain.Models;
-using PizzaBox.Storing;
 using PizzaBox.Storing.Repositories;
 
 namespace PizzaBox.Client
@@ -102,7 +98,7 @@ namespace PizzaBox.Client
       {
         Console.WriteLine($"Welcome to {userStore.Name}, {user.Name}! What do you want to do?");
         Console.WriteLine("Enter 1 to place an order.");
-        Console.WriteLine("Enter 2 to view your order history.");
+        Console.WriteLine("Enter 2 to view your active orders.");
         Console.WriteLine("Enter any other key to exit the program.");
         int.TryParse(Console.ReadLine(), out selection);
 
@@ -136,8 +132,9 @@ namespace PizzaBox.Client
       while (!exit)
       {
         Console.WriteLine($"Welcome {store.Name}! What do you want to do?");
-        Console.WriteLine("Enter 1 to view order history.");
-        Console.WriteLine("Enter 2 to view sales information.");
+        Console.WriteLine("Enter 1 to view active orders.");
+        Console.WriteLine("Enter 2 to clear the first active order.");
+        Console.WriteLine("Enter 3 to view sales information.");
         Console.WriteLine("Enter any other key to exit the program.");
         int.TryParse(Console.ReadLine(), out selection);
 
@@ -147,6 +144,14 @@ namespace PizzaBox.Client
             store.ViewOrders();
             break;
           case 2:
+            if (store.Orders.Count > 0) 
+            {
+              store.DeleteFirstOrder();
+              repo.Delete(store);
+            }
+            else Console.WriteLine("No orders exist to delete");
+            break;
+          case 3:
             //Display sales info. (may be a class function) until exit
             break;
           default:

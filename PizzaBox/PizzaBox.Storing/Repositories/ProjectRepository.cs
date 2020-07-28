@@ -19,10 +19,12 @@ namespace PizzaBox.Storing.Repositories
       foreach (var pbuser in _db.Pbuser.ToList()) if (pbuser.Name == user.Name)
       { 
         userId = pbuser.UserId;
+        break;
       }
       foreach (var pbstore in _db.Pbstore.ToList()) if (pbstore.Name == userStore.Name)
       {
         storeId = pbstore.StoreId;
+        break;
       }
       
       //Save new user's orders
@@ -44,6 +46,7 @@ namespace PizzaBox.Storing.Repositories
           foreach(var dbpizza in _db.Pizza.ToList()) if (dbpizza.Name == pizza.ToString())
           {
             pizzaId = dbpizza.PizzaId;
+            break;
           }
           ///If one cant be found, create it under that name
           /*if (pizzaId == -1)
@@ -74,8 +77,31 @@ namespace PizzaBox.Storing.Repositories
 
     }
 
-    public void Delete()
+    public void Delete(Store store)
     {
+      var orders = _db.Pborder.Include(t => t.Store);
+      var pizzaOrders = _db.PizzaOrder.Include(t => t.Order);
+      Pborder orderToDelete = null;
+
+      //Retrieve order to delete
+      foreach (var order in orders.ToList()) if (order.Store.Name == store.Name)
+      {
+        orderToDelete = order;
+        break;
+      }
+      
+      //Remove attached PizzaOrders
+      foreach (var pizzaOrder in pizzaOrders.ToList()) if (pizzaOrder.OrderId == orderToDelete.OrderId)
+      {
+        _db.PizzaOrder.Attach(pizzaOrder);
+        _db.PizzaOrder.Remove(pizzaOrder);
+        _db.SaveChanges();
+      }
+
+      //Remove the order
+      _db.Pborder.Attach(orderToDelete);
+      _db.Pborder.Remove(orderToDelete);
+      _db.SaveChanges();
 
     }
 
@@ -87,6 +113,7 @@ namespace PizzaBox.Storing.Repositories
       foreach (var pbuser in _db.Pbuser.ToList()) if (pbuser.Name == user.Name) 
       {
         userExists = true;
+        break;
       }
       
       if (userExists)
