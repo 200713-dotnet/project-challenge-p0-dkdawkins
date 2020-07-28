@@ -42,18 +42,13 @@ namespace PizzaBox.Storing.Repositories
         foreach(var pizza in order.Pizzas)
         {
           int pizzaId = -1;
-          //Find pizzaId by name (assumes pizzas already exist in db)
+
+          //Find pizzaId by name
           foreach(var dbpizza in _db.Pizza.ToList()) if (dbpizza.Name == pizza.ToString())
           {
             pizzaId = dbpizza.PizzaId;
             break;
           }
-          ///If one cant be found, create it under that name
-          /*if (pizzaId == -1)
-          {
-            Storing.Pizza pizza1 = new Storing.Pizza();
-            pizza1.Name = pizza.ToString();
-          }*/
           
           //Create a row in the PizzaOrder junction table
           PizzaOrder pizzaOrder = new PizzaOrder();
@@ -72,11 +67,7 @@ namespace PizzaBox.Storing.Repositories
       else UserRead(user, store);
     }
 
-    public void Update()
-    {
-
-    }
-
+    //Deletes the first active order for the given store in the database
     public void Delete(Store store)
     {
       var orders = _db.Pborder.Include(t => t.Store);
@@ -105,6 +96,7 @@ namespace PizzaBox.Storing.Repositories
 
     }
 
+    //Reads the user's active orders for their given store
     private void UserRead(User user, Store userStore)
     {
       //Check if the user exists in the db
@@ -152,6 +144,7 @@ namespace PizzaBox.Storing.Repositories
       }
     }
 
+    //Reads the store's active orders
     private void StoreRead(Store store)
     {
       //Load tables from db for reference

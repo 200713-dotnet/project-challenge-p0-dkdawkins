@@ -20,7 +20,7 @@ namespace PizzaBox.Domain.Models
       Price = 0.00m;
     }
 
-    //Called when loading an order from the db
+    //Called when loading an order from the database
     public Order(string name, List<Pizza> pizzas)
     {
       Name = name;
@@ -66,7 +66,7 @@ namespace PizzaBox.Domain.Models
       System.Console.WriteLine($"Total Price: ${Price}");
     }
 
-    //Calculates price of order based on the prices of each pizza
+    //Calculates price of the order based on the prices of each pizza
     private decimal CalcOrderPrice()
     {
       decimal orderPrice = 0.00m;

@@ -5,8 +5,6 @@ namespace PizzaBox.Domain.Models
   public class Store
   {
     public List<Order> Orders { get; set; }
-    
-    //Should this be a Name type?
     public string Name { get; set; }
 
     public Store()
@@ -52,9 +50,5 @@ namespace PizzaBox.Domain.Models
       var deletedOrder = Orders[0];
       Orders.RemoveAt(0);
     }
-    /*public void ViewSales()
-    {
-      
-    }*/
   }
 }

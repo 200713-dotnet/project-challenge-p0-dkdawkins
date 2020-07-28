@@ -6,7 +6,6 @@ namespace PizzaBox.Domain.Models
   {
 
     public List<Order> Orders { get; set; }
-    //public Name Name { get; set; }
     public string Name { get; set; }
 
     public User()
@@ -48,14 +47,14 @@ namespace PizzaBox.Domain.Models
         }
       }
 
-      //Add completed order to the user and store's order lists
+      //Add completed order to the user's active orders
       if (order.Pizzas.Count > 0)
       {
         Orders.Add(order);
-        userStore.Orders.Add(order);  //This must be added to db at some point
         System.Console.WriteLine("Order Placed.");
       }
     }
+
     public void ViewOrders()
     {
       foreach(var order in Orders)
@@ -74,6 +73,7 @@ namespace PizzaBox.Domain.Models
       System.Console.WriteLine($"Current Order Price: ${order.Price}");
       System.Console.WriteLine($"Current # of pizzas: {order.Pizzas.Count}");
     }
+    
     private void AddPresetPizza(Order order)
     {
       int selection = 0;
