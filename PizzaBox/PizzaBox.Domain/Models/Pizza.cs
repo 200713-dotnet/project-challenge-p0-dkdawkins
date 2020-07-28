@@ -17,12 +17,14 @@ namespace PizzaBox.Domain.Models
     }
     public string Crust { get; set; }
     public string Size { get; set; }
+    public decimal Price { get; set; }
 
     public Pizza(string size, string crust, List<string> toppings)
     {
       Size = size;
       Crust = crust;
       Toppings.AddRange(toppings);
+      Price = CalcPrice();
     }
 
     public Pizza()
@@ -39,6 +41,38 @@ namespace PizzaBox.Domain.Models
         sb.Append(t + ", ");
       }
       return $"{Size}, {Crust}, {sb}";
+    }
+
+    //Calculates price based on crust and size
+    private decimal CalcPrice()
+    {
+      decimal price = 0.00m;
+
+      switch(Crust)
+      {
+        case "Normal":
+          price += 5.00m;
+          break;
+        case "Stuffed":
+          price += 8.00m;
+          break;
+        default:
+          break;
+      }
+
+      switch(Size)
+      {
+        case "S":
+          price += 10.00m;
+          break;
+        case "L":
+          price += 15.00m;
+          break;
+        default:
+          break;
+      }
+
+      return price;
     }
   }
 }

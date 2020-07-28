@@ -67,10 +67,11 @@ namespace PizzaBox.Domain.Models
 
     private void PrintOptions(Order order)
     {
-      System.Console.WriteLine("Enter 1 to add a preset pizza");
+      System.Console.WriteLine("Enter 1 to add a preset pizza ($23.00)");
       System.Console.WriteLine("Enter 2 to add a custom pizza");
       System.Console.WriteLine("Enter 3 to remove the last pizza");
       System.Console.WriteLine("Enter any other key to checkout");
+      System.Console.WriteLine($"Current Order Price: ${order.Price}");
       System.Console.WriteLine($"Current # of pizzas: {order.Pizzas.Count}");
     }
     private void AddPresetPizza(Order order)
@@ -124,7 +125,7 @@ namespace PizzaBox.Domain.Models
 
       while(!isValid)
       {
-        System.Console.WriteLine("Enter 1 for Normal Crust, 2 for Stuffed Crust");
+        System.Console.WriteLine("Enter 1 for Normal Crust ($5.00), 2 for Stuffed Crust ($8.00)");
         int.TryParse(System.Console.ReadLine(), out selection);
 
         switch(selection)
@@ -154,7 +155,7 @@ namespace PizzaBox.Domain.Models
 
       while(!isValid)
       {
-        System.Console.WriteLine("Enter 1 for Small Pizza, 2 for Large Pizza");
+        System.Console.WriteLine("Enter 1 for Small Pizza ($10.00), 2 for Large Pizza ($15.00)");
         int.TryParse(System.Console.ReadLine(), out selection);
 
         switch(selection)

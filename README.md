@@ -28,7 +28,7 @@ The project should support objects of User, Store, Order, Pizza.
 ### order
 
 + [required] each order must be able to view/list/edit its collection of pizzas (DONE)
-+ [required] each order must be able to compute its pricing (2)
++ [required] each order must be able to compute its pricing (DONE)
 + [required] each order must be limited to a total pricing of no more than $250 (3)
 + [required] each order must be limited to a collection of pizzas of no more than 50 (DONE)
 
@@ -37,7 +37,7 @@ The project should support objects of User, Store, Order, Pizza.
 + [required] each pizza must be able to have a crust (DONE)
 + [required] each pizza must be able to have a size (DONE)
 + [required] each pizza must be able to have toppings (DONE)
-+ [required] each pizza must be able to compute its pricing (2)
++ [required] each pizza must be able to compute its pricing (DONE)
 + [required] each pizza must have no less than 2 default toppings (DONE)
 + [required] each pizza must limit its toppings to no more 5 (PARTIALLY DONE)
 
