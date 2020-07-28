@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using PizzaBox.Domain.Models;
 using PizzaBox.Storing;
 
@@ -58,7 +59,7 @@ namespace PizzaBox.Client
           name = Console.ReadLine();
           break;
         case 2:
-          Console.WriteLine("Please enter your store name...");
+          Console.WriteLine("Please enter your store name..."); //only supports PizzaHut and Dominos right now!!
           name = Console.ReadLine();
           break;
         default:
@@ -153,7 +154,7 @@ namespace PizzaBox.Client
       }
 
       //Save changes to db
-      SaveStoreData(store, db);
+      //SaveStoreData(store, db);
     }
 
     static void GetUserData(User user, Store userStore, PizzaBoxDbContext db)
@@ -161,45 +162,40 @@ namespace PizzaBox.Client
       //Check if the user exists in the db
       var userExists = false;
 
-      foreach (var pbuser in db.Pbuser.ToList())
+      foreach (var pbuser in db.Pbuser.ToList()) if (pbuser.Name == user.Name) 
       {
-        if (pbuser.Name == user.Name) 
-        {
-          userExists = true;
-        }
+        userExists = true;
       }
       
       if (userExists)
       {
-        //Load User's orders from database
-        foreach(var order in db.Pborder.ToList())
-        {
-          //Only load orders associated with user and their given store (NOTE: does not differentiate users with the same name)
-          if (order.User.Name == user.Name && order.Store.Name == userStore.Name)
-          {
-            List<Domain.Models.Pizza> userPizzas = new List<Domain.Models.Pizza>();
+        //Load tables from db for reference
+        var orders = db.Pborder.Include(t => t.User).Include(t => t.Store);
+        var pizzaOrders = db.PizzaOrder.Include(t => t.Pizza).Include(t => t.Pizza.Size).Include(t => t.Pizza.Crust);
+        var pizzaToppings = db.PizzaTopping.Include(t => t.Topping);
 
-            //Populate list of pizzas associated with a given order
-            foreach(var pizzaOrder in order.PizzaOrder.ToList())
+        //Load User's orders from database (only those associated with store; does not differentiate users with same name)
+        foreach(var order in orders.ToList()) if (order.User.Name == user.Name && order.Store.Name == userStore.Name)
+        {
+          List<Domain.Models.Pizza> orderPizzas = new List<Domain.Models.Pizza>();
+
+          //Populate list of pizzas associated with a given order
+          foreach(var pizzaOrder in pizzaOrders.ToList()) if (pizzaOrder.OrderId == order.OrderId)
+          {
+            List<string> toppings = new List<string>();
+            foreach(var pizzaTopping in pizzaToppings) if (pizzaTopping.PizzaId == pizzaOrder.PizzaId)
             {
-              if (pizzaOrder.OrderId == order.OrderId)  //Is this check necessary?
-              {
-                List<string> toppings = new List<string>();
-                foreach(var pizzaTopping in pizzaOrder.Pizza.PizzaTopping.ToList())
-                {
-                  toppings.Add(pizzaTopping.Topping.Name);
-                }
-                userPizzas.Add(new Domain.Models.Pizza(pizzaOrder.Pizza.Size.Name, pizzaOrder.Pizza.Crust.Name, toppings));
-              }
+              toppings.Add(pizzaTopping.Topping.Name);
             }
-            user.Orders.Add(new Order(order.Name, userPizzas));
+            orderPizzas.Add(new Domain.Models.Pizza(pizzaOrder.Pizza.Size.Name, pizzaOrder.Pizza.Crust.Name, toppings));
           }
+          user.Orders.Add(new Order(order.Name, orderPizzas));
         }
       }
       
       else
       {
-        //Create user in the db for later reference
+        //Create user in the db for later reference if they don't exist yet
         Pbuser pbuser = new Pbuser();
         pbuser.Name = user.Name;
         db.Pbuser.Add(pbuser);
@@ -213,82 +209,132 @@ namespace PizzaBox.Client
       int storeId = -1;
       
       //Retrieve IDs of user and store
-      foreach (var pbuser in db.Pbuser.ToList())
-      {
-        if (pbuser.Name == user.Name) 
-        {
-          userId = pbuser.UserId;
-        }
+      foreach (var pbuser in db.Pbuser.ToList()) if (pbuser.Name == user.Name)
+      { 
+        userId = pbuser.UserId;
       }
-      foreach (var pbstore in db.Pbstore.ToList())
+      foreach (var pbstore in db.Pbstore.ToList()) if (pbstore.Name == userStore.Name)
       {
-        if (pbstore.Name == userStore.Name) 
-        {
-          storeId = pbstore.StoreId;
-        }
+        storeId = pbstore.StoreId;
       }
       
-      //Save user's orders
-      foreach(var order in user.Orders)
+      //Save new user's orders
+      foreach(var order in user.Orders) if (order.IsNew)
       {
-        //Only add new orders to the db
-        if (order.IsNew)
+        Pborder pborder = new Pborder();
+        pborder.Name = order.Name;
+        pborder.UserId = userId;
+        pborder.StoreId = storeId;
+
+        db.Pborder.Add(pborder);
+        db.SaveChanges();
+
+        //Add pizza relationships to order
+        foreach(var pizza in order.Pizzas)
         {
-          Pborder pborder = new Pborder();
-          pborder.Name = order.Name;
-          pborder.UserId = userId;
-          pborder.StoreId = storeId;
-
-          db.Pborder.Add(pborder);
-          db.SaveChanges();
-
-          //Add pizza relationships to order
-          foreach(var pizza in order.Pizzas)
+          int pizzaId = -1;
+          //Find pizzaId by name (assumes pizzas already exist in db)
+          foreach(var dbpizza in db.Pizza.ToList()) if (dbpizza.Name == pizza.ToString())
           {
-            int pizzaId = -1;
-            //Find pizzaId by name (assumes pizzas already exist in db)
-            foreach(var dbpizza in db.Pizza.ToList())
-            {
-              if (dbpizza.Name == pizza.ToString())
-              {
-                pizzaId = dbpizza.PizzaId;
-              }
-            }
-            ///If one cant be found, create it under that name
-            /*if (pizzaId == -1)
-            {
-              Storing.Pizza pizza1 = new Storing.Pizza();
-              pizza1.Name = pizza.ToString();
-            }*/
-            
-            //Create a row in the PizzaOrder junction table
-            PizzaOrder pizzaOrder = new PizzaOrder();
-            pizzaOrder.OrderId = pborder.OrderId;
-            pizzaOrder.PizzaId = pizzaId;
-
-            db.PizzaOrder.Add(pizzaOrder);
-            db.SaveChanges();
+            pizzaId = dbpizza.PizzaId;
           }
+          ///If one cant be found, create it under that name
+          /*if (pizzaId == -1)
+          {
+            Storing.Pizza pizza1 = new Storing.Pizza();
+            pizza1.Name = pizza.ToString();
+          }*/
+          
+          //Create a row in the PizzaOrder junction table
+          PizzaOrder pizzaOrder = new PizzaOrder();
+          pizzaOrder.OrderId = pborder.OrderId;
+          pizzaOrder.PizzaId = pizzaId;
+
+          db.PizzaOrder.Add(pizzaOrder);
+          db.SaveChanges();
         }
       }
-
-      //Add new store orders
-      foreach(var order in userStore.Orders)
-      {
-        //START HERE!!
-      }
-
-      //db.SaveChanges();
     }
 
     static void GetStoreData(Store store, PizzaBoxDbContext db)
     {
+
+      //Load tables from db for reference
+      var orders = db.Pborder.Include(t => t.Store);
+      var pizzaOrders = db.PizzaOrder.Include(t => t.Pizza).Include(t => t.Pizza.Size).Include(t => t.Pizza.Crust);
+      var pizzaToppings = db.PizzaTopping.Include(t => t.Topping);
+
       //Load Store's orders from database
+      foreach(var order in orders.ToList()) if (order.Store.Name == store.Name)
+      {
+        List<Domain.Models.Pizza> orderPizzas = new List<Domain.Models.Pizza>();
+
+        //Populate list of pizzas associated with a given order
+        foreach(var pizzaOrder in pizzaOrders.ToList()) if (pizzaOrder.OrderId == order.OrderId)
+        {
+          List<string> toppings = new List<string>();
+          foreach(var pizzaTopping in pizzaToppings) if (pizzaTopping.PizzaId == pizzaOrder.PizzaId)
+          {
+            toppings.Add(pizzaTopping.Topping.Name);
+          }
+          orderPizzas.Add(new Domain.Models.Pizza(pizzaOrder.Pizza.Size.Name, pizzaOrder.Pizza.Crust.Name, toppings));
+        }
+        store.Orders.Add(new Order(order.Name, orderPizzas));
+      }
     }
 
     static void SaveStoreData(Store store, PizzaBoxDbContext db)
     {
       //Save changes to store orders in database
+      //int userId = -1;
+      int storeId = -1;
+      
+      //Retrieve IDs of user and store
+      /*foreach (var pbuser in db.Pbuser.ToList()) if (pbuser.Name == user.Name)
+      { 
+        userId = pbuser.UserId;
+      }*/
+      foreach (var pbstore in db.Pbstore.ToList()) if (pbstore.Name == store.Name)
+      {
+        storeId = pbstore.StoreId;
+      }
+      
+      //Save new user's orders
+      /*foreach(var order in user.Orders) if (order.IsNew)
+      {
+        Pborder pborder = new Pborder();
+        pborder.Name = order.Name;
+        pborder.UserId = userId;
+        pborder.StoreId = storeId;
+
+        db.Pborder.Add(pborder);
+        db.SaveChanges();
+
+        //Add pizza relationships to order
+        foreach(var pizza in order.Pizzas)
+        {
+          int pizzaId = -1;
+          //Find pizzaId by name (assumes pizzas already exist in db)
+          foreach(var dbpizza in db.Pizza.ToList()) if (dbpizza.Name == pizza.ToString())
+          {
+            pizzaId = dbpizza.PizzaId;
+          }
+          ///If one cant be found, create it under that name
+          if (pizzaId == -1)
+          {
+            Storing.Pizza pizza1 = new Storing.Pizza();
+            pizza1.Name = pizza.ToString();
+          }
+          
+          //Create a row in the PizzaOrder junction table
+          PizzaOrder pizzaOrder = new PizzaOrder();
+          pizzaOrder.OrderId = pborder.OrderId;
+          pizzaOrder.PizzaId = pizzaId;
+
+          db.PizzaOrder.Add(pizzaOrder);
+          db.SaveChanges();
+        }
+      }*/
     }
   }
 }

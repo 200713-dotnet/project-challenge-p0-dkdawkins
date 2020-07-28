@@ -19,6 +19,15 @@ from Pizza.PizzaTopping;
 select *
 from Client.PBStore;
 
+select *
+from Client.PBUser;
+
+select *
+from Client.PBOrder;
+
+select *
+from Client.PizzaOrder;
+
 /*
 insert into Pizza.Crust(Name)
 values ('Normal'), ('Stuffed');
@@ -67,11 +76,11 @@ values
 (18, 1), (18, 3),
 (19, 1), (19, 4),
 (20, 1), (20, 5);
-*/
+
 
 insert into Client.PBStore(Name)
 values ('PizzaHut'), ('Dominos')
 
-/*delete pp
+delete pp
 from Pizza.Pizza as pp
 go*/

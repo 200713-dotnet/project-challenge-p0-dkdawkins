@@ -43,13 +43,10 @@ namespace PizzaBox.Domain.Models
       else
       {
         //List orders by the given user
-        foreach(var order in Orders)
+        foreach(var order in Orders) if (order.Name == name)
         {
-          if (order.Name == name) //Needs further testing
-          {
-            order.ListPizzas();
-            System.Console.WriteLine("");
-          }
+          order.ListPizzas();
+          System.Console.WriteLine("");
         }
       }
     }
